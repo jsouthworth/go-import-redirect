@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
+	"jsouthworth.net/go/go-import-redirector/godoc"
 	"log"
 	"net/http"
 	"net/http/fcgi"
 	"os"
-	"rsc.io/go-import-redirector/godoc"
 )
 
 var (
