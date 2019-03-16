@@ -3,11 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"jsouthworth.net/go/go-import-redirector/godoc"
 	"log"
 	"net/http"
 	"net/http/fcgi"
 	"os"
+
+	"jsouthworth.net/go/go-import-redirector/godoc"
 )
 
 var (
@@ -31,14 +32,34 @@ func init() {
 }
 
 func main() {
+	var importPath string
+	var repoPath string
+	var servePath string
 	log.SetPrefix("go-import-redirect: ")
 	flag.Parse()
-	if flag.NArg() != 3 {
+	if flag.NArg() == 3 {
+		importPath = flag.Arg(0)
+		repoPath = flag.Arg(1)
+		servePath = flag.Arg(2)
+	}
+	if importPath == "" {
+		importPath = os.Getenv("IMPORT_PATH")
+	}
+	if repoPath == "" {
+		repoPath = os.Getenv("REPO_PATH")
+	}
+	if servePath == "" {
+		servePath = os.Getenv("SERVE_PATH")
+	}
+	log.Println("Import Path:", importPath)
+	log.Println("Repo Path:", repoPath)
+	log.Println("Serve Path:", servePath)
+	if importPath == "" || repoPath == "" || servePath == "" {
 		flag.Usage()
 	}
-	importPath := flag.Arg(0)
-	repoPath := flag.Arg(1)
-	servePath := flag.Arg(2)
+	if p := os.Getenv("PORT"); p != "" {
+		addr = ":" + p
+	}
 	mux := http.NewServeMux()
 	mux.Handle(servePath, godoc.Redirect(vcs, importPath, repoPath))
 	if fastcgi {
